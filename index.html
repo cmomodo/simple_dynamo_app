@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Student Data Form</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+            }
+            form {
+                background-color: #f9f9f9;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+            input[type="text"],
+            input[type="number"] {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            button {
+                background-color: #3498db;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+            button:hover {
+                background-color: #2980b9;
+            }
+            #result {
+                margin-top: 20px;
+                padding: 10px;
+                border-radius: 4px;
+            }
+            .success {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .error {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Student Data Form</h1>
+        <form id="studentForm">
+            <label for="studentId">Student ID:</label>
+            <input type="text" id="studentId" required />
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" required />
+
+            <label for="studentClass">Class:</label>
+            <input type="text" id="studentClass" required />
+
+            <label for="age">Age:</label>
+            <input type="number" id="age" required />
+
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result"></div>
+
+        <script>
+            document
+                .getElementById("studentForm")
+                .addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const data = {
+                        student_id: document.getElementById("studentId").value,
+                        sort_key: "Student",
+                        name: document.getElementById("name").value,
+                        student_class:
+                            document.getElementById("studentClass").value,
+                        age: parseInt(document.getElementById("age").value),
+                    };
+
+                    // Replace with your actual API Gateway URL
+                    const apiUrl =
+                        "https://joyucaeml3.execute-api.us-east-1.amazonaws.com/deploy";
+
+                    fetch(apiUrl, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            // Add your API key here if required
+                            // 'x-api-key': 'your-api-key'
+                        },
+                        body: JSON.stringify(data),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            document.getElementById("result").innerHTML =
+                                "Data sent successfully!";
+                            document.getElementById("result").className =
+                                "success";
+                        })
+                        .catch((error) => {
+                            document.getElementById("result").innerHTML =
+                                "Error: " + error.message;
+                            document.getElementById("result").className =
+                                "error";
+                        });
+                });
+        </script>
+    </body>
+</html>

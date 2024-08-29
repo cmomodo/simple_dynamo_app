@@ -1,0 +1,36 @@
+Resources:
+  MyApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: MyApi
+
+  MyResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt MyApi.RootResourceId
+      PathPart: deploy
+      RestApiId: !Ref MyApi
+
+  MyMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref MyResource
+      RestApiId: !Ref MyApi
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${MyLambda.Arn}/invocations
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization'"
+      IntegrationResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+            method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization'"
